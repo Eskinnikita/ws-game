@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import SocketioService from "@/services/socketio.service";
 export default {
   name: 'App',
   components: {
@@ -14,10 +13,13 @@ export default {
     };
   },
   created() {
-    SocketioService.setupSocketConnection()
+    this.$store.commit('SETUP_CONNECTION')
   },
   beforeUnmount() {
-    SocketioService.disconnect()
+    this.$store.dispatch('disconnect')
+  },
+  computed: {
+
   },
   methods: {
 

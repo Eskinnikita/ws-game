@@ -9,7 +9,7 @@ const routes = [
     component: ConnectionView
   },
   {
-    path: '/game',
+    path: '/game/:id',
     name: 'game',
     component: GameView
   }
