@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const store = require('../store/index')
 const updateClientStats = require('../helpers/index').updateClientStats
+const removeClient = require('../helpers/index').removeClient
 
 module.exports = (io, socket) => {
     const roomCreateHandler = (clientData) => {
@@ -27,7 +28,10 @@ module.exports = (io, socket) => {
         setTimeout(() => updateClientStats(io, 'join', client), 0)
     }
     const roomLeaveHandler = (roomId) => {
+        const disconnectedClient = removeClient(socket, store.rooms)
+        updateClientStats(io, 'leave', disconnectedClient)
         socket.leave(roomId)
+        console.log('leaved')
     }
     const roomListHandler = () => {
         const activityInfo = {activeRooms: [], roomsCount: 0}
