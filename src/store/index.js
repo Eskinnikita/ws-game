@@ -23,7 +23,7 @@ export default createStore({
     disconnect(state, commit) {
       if(state.socket) {
         commit('REMOVE_CLIENT_DATA')
-        state.socket.disconnect()
+        state.socket.disconnect(state.client)
       }
     }
   },

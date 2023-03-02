@@ -1,4 +1,11 @@
+import { useRoute} from "vue-router";
+
 const socketsBase = {
+    data() {
+        return {
+            route: useRoute()
+        }
+    },
     computed: {
         socket() {
             return this.$store.state.socket
