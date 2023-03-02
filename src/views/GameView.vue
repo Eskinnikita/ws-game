@@ -20,7 +20,7 @@ export default {
   },
   created() {
     const clientData = localStorage.getItem('client')
-    if(clientData) {
+    if(!clientData) {
       this.restoreConnection(JSON.parse(clientData))
     } else {
       this.setupStatsUpdateConnection()
@@ -28,8 +28,8 @@ export default {
   },
   methods: {
     setupStatsUpdateConnection() {
+      console.log('here')
       this.socket.on('stats:update', (data) => {
-        console.log(data)
         this.clientStats = data
         this.messages.push({
           text: `Client ${data.name} ${data.event === 'join' ? 'Joined' : 'Leaved'} the server`,
@@ -38,6 +38,7 @@ export default {
       })
     },
     restoreConnection(data) {
+      console.log('here1')
       this.joinRoom(data)
       this.setupStatsUpdateConnection()
     },
