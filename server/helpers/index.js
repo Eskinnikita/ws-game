@@ -1,11 +1,13 @@
 const store = require("../store");
 module.exports = {
     updateClientStats: (io, event, client) => {
-        const roomClients = client ?  io.sockets.adapter.rooms.get(client.roomId) : []
-        const clients = {}
-        clients.count = roomClients ? roomClients.size : 0
-        clients.connected = store.rooms[client.roomId] ? store.rooms[client.roomId].clients : []
-        io.in(client.roomId).emit('stats:update', {clients, name: client.name, event})
+        if(client) {
+            const roomClients = client ?  io.sockets.adapter.rooms.get(client.roomId) : []
+            const clients = {}
+            clients.count = roomClients ? roomClients.size : 0
+            clients.connected = store.rooms[client.roomId] ? store.rooms[client.roomId].clients : []
+            io.in(client.roomId).emit('stats:update', {clients, name: client.name, event})
+        }
     },
     removeClient: (socket, arr) => {
         for(let key in arr) {
