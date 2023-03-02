@@ -10,9 +10,11 @@ const io = require("socket.io")(http, {
 });
 
 const registerConnectionHandlers = require('./handlers/connectionHandlers')
+const registerRoomHandlers = require('./handlers/roomHandlers')
 const onConnection = (socket) => {
     console.log('user connected')
     registerConnectionHandlers(io, socket)
+    registerRoomHandlers(io, socket)
 }
 
 io.on('connection', onConnection)
