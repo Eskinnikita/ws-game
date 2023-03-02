@@ -4,7 +4,7 @@ import { io } from 'socket.io-client'
 export default createStore({
   state: {
     socket: null,
-    client: null
+    client: localStorage.getItem('client')
   },
   mutations: {
     SETUP_CONNECTION(state) {
@@ -16,6 +16,7 @@ export default createStore({
     },
     REMOVE_CLIENT_DATA(state) {
       state.client = null
+      localStorage.removeItem('client')
     }
   },
   actions: {

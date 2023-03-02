@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>Game</h2>
     <span>Clients count = {{clientStats.clientsCount}}</span>
     <div v-for="(message, index) in messages" :key="index">
       {{message.text}} ({{message.time}})
@@ -10,6 +9,7 @@
 
 <script>
 import socketsBase from "@/helpers/mixins/socketsBase";
+// import router from "@/router";
 export default {
   mixins: [socketsBase],
   data() {
@@ -20,15 +20,13 @@ export default {
   },
   created() {
     const clientData = localStorage.getItem('client')
-    if(!clientData) {
-      this.restoreConnection(JSON.parse(clientData))
-    } else {
-      this.setupStatsUpdateConnection()
+    if(clientData && !this.socket.connected) {
+      this.socket.emit('reconnect', JSON.parse(clientData))
     }
+    this.setupStatsUpdateConnection()
   },
   methods: {
     setupStatsUpdateConnection() {
-      console.log('here')
       this.socket.on('stats:update', (data) => {
         this.clientStats = data
         this.messages.push({
@@ -37,11 +35,9 @@ export default {
         })
       })
     },
-    restoreConnection(data) {
-      console.log('here1')
-      this.joinRoom(data)
-      this.setupStatsUpdateConnection()
-    },
+  },
+  beforeUnmount() {
+
   }
 }
 </script>
