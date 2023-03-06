@@ -15,7 +15,7 @@ module.exports = {
     for (const key in arr) {
       const clientIndex = arr[key].clients.findIndex(el => el.socketId === socket.id);
       if (~clientIndex) {
-        return arr[key].clients.splice(1, clientIndex)[0];
+        return arr[key].clients.splice(clientIndex, 1)[0];
       }
     }
     return {};

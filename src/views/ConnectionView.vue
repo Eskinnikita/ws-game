@@ -54,8 +54,6 @@
 
 <script>
 import socketsBase from '@/helpers/mixins/socketsBase';
-// eslint-disable-next-line import/no-cycle
-import router from '@/router';
 
 export default {
   mixins: [socketsBase],
@@ -83,7 +81,7 @@ export default {
     sendConnectionData() {
       this.joinRoom(this.connectionData);
       this.$store.commit('SET_CLIENT_DATA', this.connectionData);
-      router.push(`/room/${this.connectionData.roomId}`);
+      this.$router.push(`/room/${this.connectionData.roomId}`);
       this.connectionData.roomId = '';
       this.connectionData.name = '';
     },
@@ -92,7 +90,7 @@ export default {
       this.socket.on(this.socketRoutes.rooms.createdRoomId, roomId => {
         this.connectionData.roomId = roomId;
         this.$store.commit('SET_CLIENT_DATA', this.connectionData);
-        router.push(`/room/${roomId}`);
+        this.$router.push(`/room/${roomId}`);
       });
     },
     selectRoomAndConnect(id) {
