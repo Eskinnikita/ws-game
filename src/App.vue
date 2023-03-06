@@ -1,5 +1,5 @@
 <template>
-  <router-view/>
+    <router-view />
 </template>
 
 <script>
@@ -12,19 +12,19 @@ export default {
 
     };
   },
-  created() {
-    this.$store.commit('SETUP_CONNECTION')
-  },
-  beforeUnmount() {
-    this.$store.dispatch('disconnect')
-  },
   computed: {
 
+  },
+  created() {
+    this.$store.commit('SETUP_CONNECTION');
+  },
+  beforeUnmount() {
+    this.$store.dispatch('disconnect');
   },
   methods: {
 
   }
-}
+};
 </script>
 
 <style>

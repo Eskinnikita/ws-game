@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import GameView from '@/views/GameView.vue'
-import ConnectionView from "@/views/ConnectionView.vue";
+import { createRouter, createWebHistory } from 'vue-router';
+import ConnectionView from '@/views/ConnectionView.vue';
+import RoomView from '@/views/RoomView.vue';
 
 const routes = [
   {
@@ -9,15 +9,15 @@ const routes = [
     component: ConnectionView
   },
   {
-    path: '/game/:id',
-    name: 'game',
-    component: GameView
+    path: '/room/:id',
+    name: 'room',
+    component: RoomView
   }
-]
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
+});
 
-export default router
+export default router;

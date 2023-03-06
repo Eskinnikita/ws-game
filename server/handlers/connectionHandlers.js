@@ -1,11 +1,12 @@
-const store = require('../store/index')
-const updateClientStats = require('../helpers/index').updateClientStats
-const removeClient = require('../helpers/index').removeClient
-module.exports = (io, socket) => {
-    const disconnectHandler = () => {
-        let disconnectedClient = removeClient(socket, store.rooms) ? removeClient(socket, store.rooms)[0] : {}
-        updateClientStats(io, 'leave', disconnectedClient)
-    }
+const store = require('../store/index');
+const { updateClientStats } = require('../helpers/index');
+const { removeClient } = require('../helpers/index');
 
-    socket.on('disconnect', disconnectHandler)
-}
+module.exports = (io, socket) => {
+  const disconnectHandler = () => {
+    const disconnectedClient = removeClient(socket, store.rooms);
+    updateClientStats(io, 'leave', disconnectedClient);
+  };
+
+  socket.on('disconnect', disconnectHandler);
+};
