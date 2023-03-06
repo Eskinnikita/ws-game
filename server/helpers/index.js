@@ -13,7 +13,7 @@ module.exports = {
         for(let key in arr) {
             const clientIndex = arr[key].clients.findIndex(el => el.socketId === socket.id)
             if(~clientIndex) {
-                return arr[key].clients.splice(1, clientIndex)
+                return arr[key].clients.splice(1, clientIndex)[0]
             }
         }
         return {}

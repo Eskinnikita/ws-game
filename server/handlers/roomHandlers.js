@@ -4,22 +4,22 @@ const updateClientStats = require('../helpers/index').updateClientStats
 const removeClient = require('../helpers/index').removeClient
 
 module.exports = (io, socket) => {
-    const roomCreateHandler = (clientData) => {
+    const roomCreateHandler = (data) => {
         const roomId = crypto.randomBytes(16).toString("hex")
-        clientData.roomId = roomId
+        data.roomId = roomId
         if(!store.rooms[roomId]) {
             store.rooms[roomId] = {
-                name: clientData.serverName,
+                name: data.serverName,
                 clients: []
             }
         }
-        roomJoinHandler(clientData)
+        roomJoinHandler(data)
         socket.emit('room:get-created-id', roomId)
     }
-    const roomJoinHandler = (clientData) => {
+    const roomJoinHandler = (data) => {
         const client = {}
-        client.roomId = clientData.roomId
-        client.name = clientData.name
+        client.roomId = data.roomId
+        client.name = data.name
         client.socketId = socket.id
         socket.join(client.roomId)
         if(store.rooms[client.roomId]) {
@@ -27,11 +27,9 @@ module.exports = (io, socket) => {
         }
         setTimeout(() => updateClientStats(io, 'join', client), 0)
     }
-    const roomLeaveHandler = (roomId) => {
-        const disconnectedClient = removeClient(socket, store.rooms)
-        updateClientStats(io, 'leave', disconnectedClient)
-        socket.leave(roomId)
-        console.log('leaved')
+    const roomLeaveHandler = (data) => {
+        removeClientUpdateStats(socket, store.rooms)
+        socket.leave(data.roomId)
     }
     const roomListHandler = () => {
         const activityInfo = {activeRooms: [], roomsCount: 0}
@@ -44,13 +42,19 @@ module.exports = (io, socket) => {
         activityInfo.roomsCount = activityInfo.activeRooms.length
         socket.emit('room:set-list', activityInfo)
     }
-    const reconnectHandler = (clientData) => {
-        roomJoinHandler(clientData)
+    const reconnectHandler = (data) => {
+        removeClientUpdateStats(socket, store.rooms)
+        roomJoinHandler(data)
     }
 
-    socket.on('reconnect', reconnectHandler)
+    socket.on('room:reconnect', reconnectHandler)
     socket.on('room:get-list', roomListHandler)
     socket.on('room:join', roomJoinHandler)
-    socket.on('room:create', roomCreateHandler)
     socket.on('room:leave', roomLeaveHandler)
+    socket.on('room:create', roomCreateHandler)
+
+    const removeClientUpdateStats = (socket, arr) => {
+        const disconnectedClient = removeClient(socket, arr)
+        updateClientStats(io, 'leave', disconnectedClient)
+    }
 }

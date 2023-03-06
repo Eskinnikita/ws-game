@@ -15,20 +15,22 @@
 </template>
 
 <script>
-import {clone} from 'lodash'
 import socketsBase from "@/helpers/mixins/socketsBase";
+import {clone} from 'lodash'
 // import router from "@/router";
 export default {
   mixins: [socketsBase],
   data() {
     return {
       clientData: null,
+      currentId: null,
       clientStats: {},
       messages: []
     }
   },
   created() {
     this.clientData = localStorage.getItem('client')
+    this.currentId = clone(this.route.params.id)
     this.reconnectOnReload()
     this.setupStatsUpdateConnection()
     this.cleanMessagesByInterval()
@@ -36,16 +38,16 @@ export default {
   methods: {
     reconnectOnReload() {
       if(this.clientData && !this.socket.connected) {
-        this.socket.emit('reconnect', JSON.parse(this.clientData))
+        this.socket.emit('room:reconnect', JSON.parse(this.clientData))
       }
     },
     setupStatsUpdateConnection() {
       this.socket.on('stats:update', (data) => {
-        this.addMessage(clone(data))
+        this.clientStats = data
+        this.addMessage(this.clientStats)
       })
     },
     addMessage(data) {
-      this.clientStats = data
       this.messages.push({
         text: this.getMessageText(data),
         createdAt: Date.now()
@@ -74,7 +76,7 @@ export default {
     }
   },
   beforeUnmount() {
-    this.socket.emit('room:leave', {roomId: this.route.params.id})
+    this.socket.emit('room:leave', {roomId: this.currentId})
   }
 }
 </script>
