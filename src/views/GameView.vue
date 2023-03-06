@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import socketsBase from "@/helpers/mixins/socketsBase";
 import {clone} from 'lodash'
+import socketsBase from "@/helpers/mixins/socketsBase"
 // import router from "@/router";
 export default {
   mixins: [socketsBase],
@@ -38,7 +38,7 @@ export default {
   methods: {
     reconnectOnReload() {
       if(this.clientData && !this.socket.connected) {
-        this.socket.emit('room:reconnect', JSON.parse(this.clientData))
+        this.socket.emit(this.sockets.rooms.reconnect, JSON.parse(this.clientData))
       }
     },
     setupStatsUpdateConnection() {
@@ -76,7 +76,7 @@ export default {
     }
   },
   beforeUnmount() {
-    this.socket.emit('room:leave', {roomId: this.currentId})
+    this.socket.emit(this.sockets.rooms.leave, {roomId: this.currentId})
   }
 }
 </script>

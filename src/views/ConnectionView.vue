@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     fetchServersList() {
-      this.socket.emit('room:get-list')
+      this.socket.emit(this.sockets.rooms.roomsList)
       this.socket.on('room:set-list', (data) => {
         this.servers = data
       })
@@ -63,8 +63,8 @@ export default {
       this.connectionData.name = ''
     },
     createRoom() {
-      this.socket.emit('room:create', this.connectionData)
-      this.socket.on('room:get-created-id', (roomId) => {
+      this.socket.emit(this.sockets.rooms.create, this.connectionData)
+      this.socket.on(this.sockets.rooms.createdRoomId, (roomId) => {
         this.connectionData.roomId = roomId
         this.$store.commit('SET_CLIENT_DATA', this.connectionData)
         router.push(`/game/${roomId}`)
