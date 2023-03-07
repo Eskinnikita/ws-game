@@ -4,37 +4,49 @@
             Web Sockets Lobby
         </h1>
         <form>
-            <label>Input your name</label>
+            <label for="name">Input your name</label>
             <input
+                id="name"
                 type="text"
                 v-model="connectionData.name"
             >
         </form>
         <div class="connection__forms">
             <form @submit.prevent="sendConnectionData">
-                <label>Input room id</label>
+                <label for="roomId">Input room id</label>
                 <input
+                    id="roomId"
                     type="text"
                     v-model="connectionData.roomId"
                 >
-                <button type="submit">
+                <button
+                    :disabled="!this.connectionData.name.trim() || !this.connectionData.roomId"
+                    type="submit"
+                >
                     Connect
                 </button>
             </form>
             <form @submit.prevent="createRoom">
-                <label>Input server name</label>
+                <label for="serverName">Input server name</label>
                 <input
+                    id="serverName"
                     type="text"
                     v-model="connectionData.serverName"
                 >
-                <button type="submit">
+                <button
+                    :disabled="!this.connectionData.name.trim() || !this.connectionData.serverName.trim()"
+                    type="submit"
+                >
                     Create room
                 </button>
             </form>
         </div>
         <div class="server-list">
             <div class="server-list__header">
-                <h2>Available rooms: {{ servers.roomsCount }}</h2><button @click="fetchServersList">
+                <h2>Available rooms: {{ servers.roomsCount }}</h2><button
+                    type="button"
+                    @click="fetchServersList"
+                >
                     Reload
                 </button>
             </div>
@@ -44,7 +56,11 @@
                 :key="index"
             >
                 <span>{{ server.name }} ({{ server.clientsCount }})</span>
-                <button @click="selectRoomAndConnect(server.id)">
+                <button
+                    :disabled="!this.connectionData.name.trim()"
+                    type="button"
+                    @click="selectRoomAndConnect(server.id)"
+                >
                     Connect
                 </button>
             </div>

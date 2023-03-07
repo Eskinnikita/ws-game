@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        <game-screen />
+        <game-screen ref="game" />
     </div>
 </template>
 
@@ -45,7 +45,7 @@ export default {
       messages: []
     };
   },
-  created() {
+  mounted() {
     this.clientData = localStorage.getItem('client');
     this.currentId = clone(this.route.params.id);
     this.reconnectOnReload();
@@ -64,24 +64,34 @@ export default {
     setupStatsUpdateConnection() {
       this.socket.on(this.socketRoutes.stats.update, data => {
         this.clientStats = data;
-        this.addMessage(this.clientStats);
+        this.onClientRoomAction(this.clientStats);
       });
     },
-    addMessage(data) {
-      this.messages.push({
-        text: this.getMessageText(data),
-        createdAt: Date.now()
-      });
-    },
-    getMessageText(data) {
+    onClientRoomAction(data) {
       switch (data.event) {
         case 'join':
-          return `${data.name}, glad to see you on server!`;
+          this.addMessage(`${data.name}, glad to see you on server!`);
+          this.onClientJoin()
+          break;
         case 'leave':
-          return `Goodbye, ${data.name}, we already miss you`;
+          this.addMessage(`Goodbye, ${data.name}, we already miss you`);
+          break;
         default:
-          return '';
+          break;
       }
+    },
+    onClientJoin() {
+      // eslint-disable-next-line no-console
+      // const box = Matter.Bodies.rectangle(150, 50, 50, 50);
+      // if(this.$refs.room) {
+      //   this.$refs.game.addProp(box);
+      // }
+    },
+    addMessage(text) {
+      this.messages.push({
+        text,
+        createdAt: Date.now()
+      });
     },
     cleanMessagesByInterval() {
       const maxLifespan = 5000;

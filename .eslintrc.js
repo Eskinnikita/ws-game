@@ -5,7 +5,6 @@ module.exports = {
   },
   extends: [
     'plugin:vue/strongly-recommended',
-    '@vue/eslint-config-airbnb'
   ],
   parserOptions: {
     parser: '@babel/eslint-parser'
@@ -18,7 +17,7 @@ module.exports = {
     }
   },
   rules: {
-    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    // 'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'vue/html-self-closing': ['error', {
       html: {
         void: 'never',

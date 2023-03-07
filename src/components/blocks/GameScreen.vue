@@ -1,8 +1,8 @@
 <template>
     <div class="game-screen">
         <canvas
-            width="300"
-            height="200"
+            width="800"
+            height="600"
             ref="game"
         />
     </div>
@@ -10,40 +10,30 @@
 
 <script>
 import socketsBase from '@/helpers/mixins/socketsBase';
+import engineBase from '@/helpers/mixins/engineBase';
 
 export default {
-  mixins: [socketsBase],
+  mixins: [socketsBase, engineBase],
   data() {
     return {
-      canvas: this.$refs.game,
-      ctx: null
+      canvas: null,
+      ctx: null,
+      props: []
     };
   },
   mounted() {
+    this.canvas = this.$refs.game;
+    this.ctx = this.canvas.getContext('2d');
     this.onInit();
+    this.initEngine();
   },
   methods: {
     onInit() {
-      this.canvas = this.$refs.game;
       this.ctx = this.canvas.getContext('2d');
-      this.drawMap();
-    },
-    drawMap() {
-      this.socket.on('game', ({ walls, boxes }) => {
-        this.ctx.clearRect(0, 0, 300, 200);
-        this.ctx.fillStyle = '#111';
-        this.ctx.strokeStyle = '#111';
-        walls.forEach(wall => this.draw(wall, this.ctx));
-        this.ctx.fillStyle = '#fff';
-        boxes.forEach(box => this.draw(box, this.ctx));
-      });
-    },
-    draw(body) {
-      this.ctx.beginPath();
-      body.forEach(e => this.ctx.lineTo(e.x, e.y));
-      this.ctx.closePath();
-      this.ctx.fill();
-      this.ctx.stroke();
+      this.socket.on('game:update', data => {
+        this.updateEngine();
+        return data;
+      })
     }
   }
 };
