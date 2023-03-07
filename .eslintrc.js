@@ -18,6 +18,7 @@ module.exports = {
     }
   },
   rules: {
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'vue/html-self-closing': ['error', {
       html: {
         void: 'never',
