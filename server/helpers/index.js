@@ -19,14 +19,5 @@ module.exports = {
       }
     }
     return {};
-  },
-  removeClientProp: (roomId, socketId) => {
-    const room = store.rooms[roomId];
-    if(room) {
-      const propIndex = room.props.findIndex(el => el.socketId === socketId);
-      if(~propIndex) {
-        room.props.splice(propIndex, 1);
-      }
-    }
   }
 };

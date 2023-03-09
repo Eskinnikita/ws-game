@@ -11,7 +11,7 @@ const io = require('socket.io')(http, {
 
 const registerConnectionHandlers = require('./handlers/connectionHandlers');
 const registerRoomHandlers = require('./handlers/roomHandlers');
-const registerGameHandlers = require('./handlers/gameHandlers')
+const registerGameHandlers = require('./handlers/gameHandlers');
 
 const onConnection = socket => {
   // eslint-disable-next-line no-console

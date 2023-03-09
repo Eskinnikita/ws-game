@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const store = require('../store/index');
-const { updateClientStats, removeClient, removeClientProp } = require('../helpers/index');
+const { updateClientStats, removeClient } = require('../helpers/index');
+const MatterEngine = require('../engine');
 
 module.exports = (io, socket) => {
   const removeClientUpdateStats = arr => {
@@ -15,19 +16,16 @@ module.exports = (io, socket) => {
       socketId: socket.id
     };
 
-    const clientBody = {x: 50, y: 50, socketId: socket.id};
-
     socket.join(client.roomId);
-    const room = store.rooms[client.roomId]
+    const room = store.rooms[client.roomId];
     if (room) {
       room.clients.push(client);
-      room.props.push(clientBody);
-      room.updater = setInterval(() => {
-        io.in(client.roomId).emit('game:update', room.props)
-      }, 1000 / 60)
     }
     setTimeout(() => {
-      updateClientStats(io, 'join', client)
+      updateClientStats(io, 'join', client);
+      if(room) {
+        room.engine.onClientConnect(client, socket.id);
+      }
     }, 0);
   };
 
@@ -38,8 +36,7 @@ module.exports = (io, socket) => {
       store.rooms[roomId] = {
         name: data.serverName,
         clients: [],
-        props: [],
-        updater: null
+        engine: new MatterEngine(io, socket, roomId)
       };
     }
     roomJoinHandler(data);
@@ -48,7 +45,9 @@ module.exports = (io, socket) => {
 
   const roomLeaveHandler = data => {
     removeClientUpdateStats(store.rooms);
-    removeClientProp(data.roomId, socket.id);
+    if(store.rooms[data.roomId]) {
+      store.rooms[data.roomId].engine.onClientLeave(data, socket.id);
+    }
     socket.leave(data.roomId);
   };
 
@@ -68,7 +67,6 @@ module.exports = (io, socket) => {
 
   const reconnectHandler = data => {
     removeClientUpdateStats(store.rooms);
-    removeClientProp(data.roomId, socket.id);
     roomJoinHandler(data);
   };
 
