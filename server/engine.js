@@ -1,11 +1,12 @@
 const Matter = require('matter-js')
 
-const {Engine, Bodies, Composite, World, Vector, Body, Runner, Render} = Matter;
+const {Engine, Bodies, World, Vector, Body} = Matter;
 
 module.exports = class MatterEngine {
     //Matter components setup
     canvas = {width: 1200, height: 800};
     wallThickness = 20;
+    speed = 0.05;
     entities = {
         clients: [],
         walls: [
@@ -70,6 +71,20 @@ module.exports = class MatterEngine {
     init = () => {
 
     };
+
+    moveClientEntity = data => {
+        // eslint-disable-next-line no-console
+        console.log('called', data.socketId)
+        const clientBody = this.entities.clients.find(el => el.socketId === data.socketId)
+        if(clientBody) {
+            for(let key in data.moveTo) {
+                if(data.moveTo[key] !== 0) {
+                    data.moveTo[key] = data.moveTo[key] > 0 ? this.speed : -this.speed;
+                }
+            }
+            Body.applyForce(clientBody, {x: clientBody.position.x, y: clientBody.position.y}, data.moveTo)
+        }
+    }
 
     addEntity = (entity, type) => {
         if (!this.entities[type]) {

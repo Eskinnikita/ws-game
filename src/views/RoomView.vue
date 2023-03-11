@@ -22,7 +22,10 @@
                 </div>
             </div>
         </div>
-        <game-screen ref="game" />
+        <game-screen
+            :room-id="currentId"
+            ref="game"
+        />
     </div>
 </template>
 
@@ -40,7 +43,7 @@ export default {
   data() {
     return {
       clientData: null,
-      currentId: null,
+      currentId: '',
       clientStats: {},
       messages: []
     };

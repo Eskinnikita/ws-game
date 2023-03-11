@@ -13,19 +13,51 @@ import socketsBase from '@/helpers/mixins/socketsBase';
 
 export default {
   mixins: [socketsBase],
+  props: {
+    roomId: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       canvas: null,
-      ctx: null,
-      props: []
-    };
+      ctx: null
+    }
   },
   mounted() {
     this.canvas = this.$refs.game;
     this.ctx = this.canvas.getContext('2d');
     this.onInit();
+    this.registerControls()
+  },
+  beforeUnmount() {
+    window.removeEventListener('keydown', this.handleClientMove)
   },
   methods: {
+    registerControls() {
+      window.addEventListener('keydown', this.handleClientMove)
+    },
+    moveClient(moveTo) {
+      const data = {moveTo, socketId: this.socket.id, roomId: this.roomId};
+      // eslint-disable-next-line no-console
+      console.log(data)
+      this.socket.emit('game:move-client', data)
+    },
+    handleClientMove(e) {
+      switch(e.keyCode) {
+        case 32:
+          this.moveClient({x: 0, y: -1});
+          break;
+        case 37:
+          this.moveClient({x: -1, y: 0});
+          break;
+        case 39:
+          this.moveClient({x: +1, y: 0});
+          break;
+        default:
+      }
+    },
     onInit() {
       this.ctx = this.canvas.getContext('2d');
       this.socket.on('game:update', ({walls, clients}) => {
