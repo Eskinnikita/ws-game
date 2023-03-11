@@ -4,7 +4,7 @@ module.exports = {
     node: true
   },
   extends: [
-    'plugin:vue/strongly-recommended',
+    'plugin:vue/strongly-recommended'
   ],
   parserOptions: {
     parser: '@babel/eslint-parser'
