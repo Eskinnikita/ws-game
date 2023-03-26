@@ -1,10 +1,12 @@
 import { createStore } from 'vuex';
 import { io } from 'socket.io-client';
 
+import * as roomsStore from './modules/rooms'
+
 export default createStore({
   state: {
     socket: null,
-    client: localStorage.getItem('client')
+    client: localStorage.getItem('client') || {}
   },
   mutations: {
     SETUP_CONNECTION(state) {
@@ -17,6 +19,9 @@ export default createStore({
     REMOVE_CLIENT_DATA(state) {
       state.client = null;
       localStorage.removeItem('client');
+    },
+    SET_CLIENT_DATA_ON_RECONNECT(state, data) {
+      state.client = data;
     }
   },
   actions: {
@@ -28,5 +33,6 @@ export default createStore({
     }
   },
   modules: {
+    roomsStore
   }
 });

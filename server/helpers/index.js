@@ -1,13 +1,22 @@
 const store = require('../store');
 
 module.exports = {
-  updateClientStats: (io, event, client) => {
+  updateClientStats: (io, socket, event, client) => {
     if (client) {
       const roomClients = io.sockets.adapter.rooms.get(client.roomId) || [];
       const clients = {};
       clients.count = roomClients.size;
       clients.connected = store.rooms[client.roomId] ? store.rooms[client.roomId].clients : [];
-      io.in(client.roomId).emit('stats:update', { clients, name: client.name, event });
+      const messageText = event === 'join'
+        ? 'joined the server'
+        : 'leaved the server';
+      const message = {
+        name: client.name,
+        text: messageText,
+        createdAt: Date.now(),
+        socketId: socket.id
+      };
+      io.in(client.roomId).emit('stats:update', { clients, message });
     }
   },
   removeClient: (socket, arr) => {
@@ -19,5 +28,8 @@ module.exports = {
       }
     }
     return {};
+  },
+  sendMessage: (io, message, roomId, clientName) => {
+    io.in(roomId).emit('stats:update', { name: clientName, text: message });
   }
 };

@@ -40,8 +40,6 @@ export default {
     },
     moveClient(moveTo) {
       const data = {moveTo, socketId: this.socket.id, roomId: this.roomId};
-      // eslint-disable-next-line no-console
-      console.log(data)
       this.socket.emit('game:move-client', data)
     },
     handleClientMove(e) {

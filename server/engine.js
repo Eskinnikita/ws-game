@@ -73,8 +73,6 @@ module.exports = class MatterEngine {
     };
 
     moveClientEntity = data => {
-        // eslint-disable-next-line no-console
-        console.log('called', data.socketId)
         const clientBody = this.entities.clients.find(el => el.socketId === data.socketId)
         if(clientBody) {
             for(let key in data.moveTo) {

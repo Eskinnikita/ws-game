@@ -9,8 +9,8 @@ export default function () {
           leave: 'room:leave',
           roomsList: 'room:get-list',
           setRoomsList: 'room:set-list',
-          createdRoomId: 'room:get-created-id'
-
+          createdRoomId: 'room:get-created-id',
+          getMessage: 'room:get-message'
         },
         stats: {
           update: 'stats:update'

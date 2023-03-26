@@ -6,7 +6,7 @@ const MatterEngine = require('../engine');
 module.exports = (io, socket) => {
   const removeClientUpdateStats = arr => {
     const disconnectedClient = removeClient(socket, arr);
-    updateClientStats(io, 'leave', disconnectedClient);
+    updateClientStats(io, socket, 'leave', disconnectedClient);
   };
 
   const roomJoinHandler = data => {
@@ -22,7 +22,7 @@ module.exports = (io, socket) => {
       room.clients.push(client);
     }
     setTimeout(() => {
-      updateClientStats(io, 'join', client);
+      updateClientStats(io, socket, 'join', client);
       if(room) {
         room.engine.onClientConnect(client, socket.id);
       }
@@ -70,9 +70,14 @@ module.exports = (io, socket) => {
     roomJoinHandler(data);
   };
 
+  const sendMessageHandler = data => {
+    io.to(data.roomId).emit('room:get-message', data.message);
+  }
+
   socket.on('room:reconnect', reconnectHandler);
   socket.on('room:get-list', roomListHandler);
   socket.on('room:join', roomJoinHandler);
   socket.on('room:leave', roomLeaveHandler);
   socket.on('room:create', roomCreateHandler);
+  socket.on('room:send-message', sendMessageHandler);
 };

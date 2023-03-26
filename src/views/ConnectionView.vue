@@ -70,6 +70,7 @@
 
 <script>
 import socketsBase from '@/helpers/mixins/socketsBase';
+import {clone} from 'lodash';
 
 export default {
   mixins: [socketsBase],
@@ -95,8 +96,9 @@ export default {
       });
     },
     sendConnectionData() {
+      // eslint-disable-next-line no-console
       this.joinRoom(this.connectionData);
-      this.$store.commit('SET_CLIENT_DATA', this.connectionData);
+      this.$store.commit('SET_CLIENT_DATA', clone(this.connectionData));
       this.$router.push(`/room/${this.connectionData.roomId}`);
       this.connectionData.roomId = '';
       this.connectionData.name = '';

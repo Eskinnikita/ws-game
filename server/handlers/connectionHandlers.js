@@ -8,7 +8,7 @@ module.exports = (io, socket) => {
     if(store.rooms[disconnectedClient.roomId]) {
       store.rooms[disconnectedClient.roomId].engine.onClientLeave(disconnectedClient, socket.id);
     }
-    updateClientStats(io, 'leave', disconnectedClient);
+    updateClientStats(io, socket, 'leave', disconnectedClient);
   };
 
   socket.on('disconnect', disconnectHandler);
