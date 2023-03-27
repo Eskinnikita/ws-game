@@ -5,12 +5,11 @@ export const state = {
 
 export const mutations = {
   ADD_MESSAGE(state, data) {
-    // eslint-disable-next-line no-console
-    console.log(data)
     if(state.messages.length > 4) {
       state.messages.shift();
     }
-    state.messages.push(data.message);
+    if(data.message) data = data.message;
+    state.messages.push(data);
   },
   ON_ROOM_DESTROY(state) {
     state.messages = [];

@@ -38,6 +38,10 @@ export default {
     window.addEventListener('keydown', this.sendMessage);
     this.chatInput = this.$refs.chatInput
     this.chatInput.onblur = () => {
+      const hoverElements = document.querySelectorAll( ":hover" );
+      if(hoverElements[hoverElements.length - 1].tagName === 'BUTTON') {
+        return;
+      }
       this.opened = false;
     };
     this.processMessage()
@@ -63,11 +67,9 @@ export default {
       }
     },
     sendMessage(e, type) {
-      // eslint-disable-next-line no-console
       if((e.keyCode === 13 && this.opened) || (type && type === 'button')) {
         if(this.message.text) {
           this.processMessage();
-          this.$store.commit('ADD_MESSAGE', {message: clone(this.message), socketId: this.socket.id});
           this.socket.emit('room:send-message', {
             message: clone(this.message),
             roomId: this.client.roomId
