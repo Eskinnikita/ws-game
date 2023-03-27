@@ -53,7 +53,12 @@ module.exports = class MatterEngine {
             Engine.update(this.engine, 1000 / 60);
             const processedEntities = {};
             for(let key in this.entities) {
-                processedEntities[key] = this.entities[key].map(this.toVertices);
+                processedEntities[key] = this.entities[key].map(el => {
+                    return {
+                        position: this.toVertices(el),
+                        name: el.name
+                    };
+                });
             }
             this.io.to(this.roomId).emit('game:update', processedEntities)
         }, 1000 / 60)

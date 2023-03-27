@@ -61,10 +61,13 @@ export default {
       this.socket.on('game:update', ({walls, clients}) => {
         this.ctx.clearRect(0, 0, 1200, 1000);
         this.ctx.fillStyle = "#111";
-        this.ctx.strokeStyle = "#111";
-        walls.forEach(wall => this.draw(wall, this.ctx));
+        walls.forEach(wall => this.draw(wall.position, this.ctx));
+        clients.forEach(box => {
+          this.ctx.fillStyle = Math.floor(Math.random() * 16777215).toString(16);
+          this.draw(box.position, this.ctx)
+          this.drawName(box.name, box.position, this.ctx)
+        });
         this.ctx.fillStyle = "#aaa";
-        clients.forEach(box => this.draw(box, this.ctx));
       })
     },
     draw(body, ctx) {
@@ -73,6 +76,13 @@ export default {
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
+    },
+    drawName(name, position, ctx) {
+      ctx.font = "30px Arial";
+      ctx.fillStyle = "#111";
+      const textX = position[3].x;
+      const textY = position[3].y;
+      ctx.fillText(name, textX, textY);
     }
   }
 };
